@@ -1,0 +1,81 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+public class LogInOut {
+
+    private static final Logger logger = LoggerFactory.getLogger(LogInOut.class);
+
+    public static void main(String[] args) {
+        try {
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\Alexander\\Desktop\\Skolarbete\\I0015N - Test av itsystem\\chromedriver.exe");
+
+            // Create Chrome options to disable notifications using Chrome profile
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-notifications");
+            Map<String, Object> prefs = new HashMap<String, Object>();
+            prefs.put("profile.default_content_setting_values.notifications", 2);
+            options.setExperimentalOption("prefs", prefs);
+
+            // Create Chrome driver with options
+            WebDriver driver = new ChromeDriver(options);
+            driver.get("https://www.facebook.com/");
+
+            // Wait for the "Accept All" button to appear in the cookies popup and then click it
+            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebElement acceptButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@title='Tillåt nödvändiga och valfria cookies']")));
+            acceptButton.click();
+
+            // Log in with email and password
+            logger.info("Logging in with email and password...");
+            WebElement email = driver.findElement(By.id("email"));
+            email.sendKeys("vegab78938@hrisland.com");
+            WebElement password = driver.findElement(By.id("pass"));
+            password.sendKeys("asdasd123");
+            WebElement loginBtn = driver.findElement(By.name("login"));
+            loginBtn.click();
+
+            // Wait for a few seconds before logging out
+            Thread.sleep(5000);
+
+            // Click on account settings dropdown
+            logger.info("Clicking on account settings dropdown...");
+            WebElement accSettings = driver.findElement(By.cssSelector("div[class=\"x1i10hfl x1qjc9v5 xjbqb8w xjqpnuy xa49m3k xqeqjp1 x2hbi6w x13fuv20 xu3j5b3 x1q0q8m5 x26u7qi x972fbf xcfux6l x1qhh985 xm0m39n x9f619 x1ypdohk xdl72j9 x2lah0s xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r x2lwn1j xeuugli xexx8yu x4uap5 x18d9i69 xkhd6sd x1n2onr6 x16tdsg8 x1hl2dhg xggy1nq x1ja2u2z x1t137rt x1o1ewxj x3x9cwd x1e5q0jg x13rtm0m x1q0g3np x87ps6o x1lku1pv x1a2a7pz xzsf02u x1rg5ohu\"]"));
+            accSettings.click();
+
+            // Wait for a few seconds before logging out
+            Thread.sleep(5000);
+
+            // Log out of the account
+            logger.info("Logging out of the account...");
+            WebElement logoutLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='Logga ut']")));
+            logoutLink.click();
+
+            // Wait for a few seconds before closing the browser
+            Thread.sleep(5000);
+            driver.quit();
+            // catch blocks, NoSuchElementException for when the Element searched for isn't found, InterruptedException for when something gets interrupted during sleep/wait, Error for any error that occurs//
+        } catch (NoSuchElementException e) {
+            logger.error("Element not found: " + e.getMessage());
+        } catch (InterruptedException e) {
+            logger.error("Thread interrupted: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("An error occurred: " + e.getMessage());
+            // Implement Logback to log the stack trace
+            logger.error("Stack trace:", e);
+        }
+    }
+}
+
