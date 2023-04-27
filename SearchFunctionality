@@ -1,0 +1,92 @@
+package org.example;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Main {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+
+    public static void main(String[] args) {
+        try {
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\Alexander\\Desktop\\Skolarbete\\I0015N - Test av itsystem\\chromedriver.exe");
+
+            // Create Chrome options to disable notifications using Chrome profile
+            ChromeOptions options = new ChromeOptions();
+            options.addArguments("--disable-notifications");
+            options.addArguments("--disable-popup-blocking");
+            options.addArguments("--disable-extensions");
+            Map<String, Object> prefs = new HashMap<String, Object>();
+            prefs.put("profile.default_content_setting_values.notifications", 2);
+            options.setExperimentalOption("prefs", prefs);
+
+            // Create Chrome driver with options
+            WebDriver driver = new ChromeDriver(options);
+            driver.get("https://www.facebook.com/");
+
+            LOGGER.info("Navigerat till Facebook");
+
+            // Wait for the "Accept All" button to appear in the cookies popup and then click it
+            WebDriverWait wait = new WebDriverWait(driver, 10);
+            WebElement acceptButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@title='Tillåt nödvändiga och valfria cookies']")));
+            acceptButton.click();
+
+            LOGGER.info("Accepterat kakor");
+
+            // Find the email and password fields and login button
+            WebElement emailField = driver.findElement(By.id("email"));
+            WebElement passwordField = driver.findElement(By.id("pass"));
+            WebElement loginButton = driver.findElement(By.name("login"));
+
+            LOGGER.info("Hittat email och lösenord fält samt inloggningsknappen");
+
+            // Enter the user's login credentials
+            emailField.sendKeys("dinikef864@fitzola.com");
+            passwordField.sendKeys("asdasd123");
+
+            LOGGER.info("Angett inloggningsinformation");
+
+            // Click on the login button
+            loginButton.click();
+
+            LOGGER.info("Klickat på inloggningsknappen");
+
+            Thread.sleep(5000);
+
+            // Find the search box and enter the search query
+            WebElement searchBox = driver.findElement(By.cssSelector("input[placeholder='Sök på Facebook']"));
+            searchBox.sendKeys("Alan Johnson");
+            searchBox.sendKeys(Keys.RETURN);
+
+            LOGGER.info("Angett sökningsförfrågan");
+
+            Thread.sleep(10000);
+
+            // Find the search result and click on it
+            // Find the search result and verify it is accurate and relevant
+            WebElement searchResult = driver.findElement(By.xpath("//span[text()='Alan Johnson']"));
+            String searchResultName = searchResult.getText();
+            if (searchResultName.equals("Alan Johnson")) {
+                LOGGER.info("Search result is accurate and relevant");
+            } else {
+                LOGGER.error("Search result is not accurate and relevant");
+            }
+
+            // Close the browser
+            driver.quit();
+
+            LOGGER.info("Stänger webbläsaren");
+
+        } catch (InterruptedException | WebDriverException e) {
+            LOGGER.error("An error occurred while executing the script: " + e.getMessage());
+        }
+    }
+}
