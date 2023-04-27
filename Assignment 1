@@ -1,0 +1,57 @@
+package org.example;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.List;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class Main {
+    public static void main(String[] args) {
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mattt\\OneDrive\\Dokument\\Systemvetenskap\\IT-design\\chromedriver.exe");
+
+        // Create Chrome options to disable notifications using Chrome profile
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--disable-notifications");
+        Map<String, Object> prefs = new HashMap<String, Object>();
+        prefs.put("profile.default_content_setting_values.notifications", 2);
+        options.setExperimentalOption("prefs", prefs);
+
+         // Create Chrome driver with options
+        WebDriver driver = new ChromeDriver(options);
+        driver.get("https://www.facebook.com");
+
+        // Wait for the "Allow Cookies" window to appear and then click on the "Accept All" button
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@title='Tillåt nödvändiga och valfria cookies']"))).click();
+
+        //Skriver in Email
+        WebElement email = driver.findElement(By.id("email"));
+        email.sendKeys("vegab78938@hrisland.com");
+
+        //Skriver in Lösenord
+        WebElement password = driver.findElement(By.id("pass"));
+        password.sendKeys("asdasd123");
+
+        // Hitta knappen för att logga in och klicka på den
+        WebElement loginBtn = driver.findElement(By.name("login"));
+        loginBtn.click();
+
+        //Click on Account Settings Dropdown
+        WebElement AccSettings = driver.findElement(By.cssSelector("div[class=\"x1i10hfl x1qjc9v5 xjbqb8w xjqpnuy xa49m3k xqeqjp1 x2hbi6w x13fuv20 xu3j5b3 x1q0q8m5 x26u7qi x972fbf xcfux6l x1qhh985 xm0m39n x9f619 x1ypdohk xdl72j9 x2lah0s xe8uvvx xdj266r x11i5rnm xat24cr x1mh8g0r x2lwn1j xeuugli xexx8yu x4uap5 x18d9i69 xkhd6sd x1n2onr6 x16tdsg8 x1hl2dhg xggy1nq x1ja2u2z x1t137rt x1o1ewxj x3x9cwd x1e5q0jg x13rtm0m x1q0g3np x87ps6o x1lku1pv x1a2a7pz xzsf02u x1rg5ohu\"]"));
+        AccSettings.click();
+
+
+        // Vänta på att dropdown-menyn visas och klicka sedan på "Logga ut" länken
+        WebDriverWait chill = new WebDriverWait(driver, 10);
+        chill.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[text()='Logga ut']"))).click();
+
+    }
+}
