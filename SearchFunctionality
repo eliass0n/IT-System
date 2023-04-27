@@ -32,32 +32,32 @@ public class Main {
             WebDriver driver = new ChromeDriver(options);
             driver.get("https://www.facebook.com/");
 
-            LOGGER.info("Navigerat till Facebook");
+            LOGGER.info("Navigated to Facebook");
 
             // Wait for the "Accept All" button to appear in the cookies popup and then click it
             WebDriverWait wait = new WebDriverWait(driver, 10);
             WebElement acceptButton = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@title='Tillåt nödvändiga och valfria cookies']")));
             acceptButton.click();
 
-            LOGGER.info("Accepterat kakor");
+            LOGGER.info("Accepted Cookies");
 
             // Find the email and password fields and login button
             WebElement emailField = driver.findElement(By.id("email"));
             WebElement passwordField = driver.findElement(By.id("pass"));
             WebElement loginButton = driver.findElement(By.name("login"));
 
-            LOGGER.info("Hittat email och lösenord fält samt inloggningsknappen");
+            LOGGER.info("Found Email, password credentials field and the button to log in");
 
             // Enter the user's login credentials
             emailField.sendKeys("dinikef864@fitzola.com");
             passwordField.sendKeys("asdasd123");
 
-            LOGGER.info("Angett inloggningsinformation");
+            LOGGER.info("Login information entered");
 
             // Click on the login button
             loginButton.click();
 
-            LOGGER.info("Klickat på inloggningsknappen");
+            LOGGER.info("Clicking on login button");
 
             Thread.sleep(5000);
 
@@ -66,7 +66,7 @@ public class Main {
             searchBox.sendKeys("Alan Johnson");
             searchBox.sendKeys(Keys.RETURN);
 
-            LOGGER.info("Angett sökningsförfrågan");
+            LOGGER.info("Executed searchquery");
 
             Thread.sleep(10000);
 
@@ -83,7 +83,7 @@ public class Main {
             // Close the browser
             driver.quit();
 
-            LOGGER.info("Stänger webbläsaren");
+            LOGGER.info("Closing browser");
 
         } catch (InterruptedException | WebDriverException e) {
             LOGGER.error("An error occurred while executing the script: " + e.getMessage());
