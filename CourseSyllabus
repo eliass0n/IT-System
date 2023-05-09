@@ -40,10 +40,15 @@ public class Main {
 
             // Click the "Student" button
             $(By.xpath("//a[text()='Student']")).click();
+            logger.info("Clicking student option");
+
+
             // Do something on the website, for example print the page title
 
 
             $(By.xpath("//a[text()='Mitt LTU']")).click();
+
+            logger.info("Clicking LTU button");
 
             String username = "";
             String password = "";
@@ -81,35 +86,59 @@ public class Main {
             // Find the dropdown element by its ID
             WebElement dropdown = $(By.id("utbkatsearch_filterKategori")).shouldBe(visible);
 
+            logger.info("Found dropdown");
+
+
 // Create a Select object from the dropdown element
             Select select = new Select(dropdown);
 
+
+
+
 // Select the option with text "Alla program, kurser och examen"
             select.selectByVisibleText("Alla program, kurser och examen");
+
+            logger.info("Selected option in dropdown");
 
 
             Thread.sleep(3000);
 
 
-
             // Click the "Search on text" label
             $(byXpath("//label[contains(text(), 'Sök på fritext')]")).click();
 
-            // Enter text in the "Sök på fritext" field using the YourPage class
+            logger.info("Clicked search label");
+
+
+            // Enter text in the "Sök på fritext" field
             $(By.id("fritext")).setValue("Systemvetenskap");
+
+
+            logger.info("Entered text in search field");
+
 
 // Click the search button
             $(By.xpath("//*[@id='btnSearch']")).click();
+
+            logger.info("Clicked search button");
+
 
             // Locate and click the target element
             $(By.cssSelector("html > body > main > div > div > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2) > a"))
                     .shouldBe(visible)
                     .click();
 
+            logger.info("Located and clicked target element");
+
+
+
             $(By.cssSelector("a[class='utbplan-pdf-link'] div"))
                     .shouldBe(visible)
                     .click();
 
+            logger.info("Clicked PDF download link");
+
+            logger.info("Sucessfully downloaded pdf");
 
             Scanner scanner = new Scanner(System.in);
             System.out.println("Press enter to exit...");
