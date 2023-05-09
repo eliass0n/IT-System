@@ -49,7 +49,7 @@ public class Main {
             String password = "";
 
             try {
-                String jsonString = new String(Files.readAllBytes(Paths.get("c:/temp/info.json")));
+                String jsonString = new String(Files.readAllBytes(Paths.get("c:/temp/ltu.json")));
                 JSONObject jsonObject = new JSONObject(jsonString);
                 username = jsonObject.getJSONObject("ltuCredentials").getString("Användarid");
                 password = jsonObject.getJSONObject("ltuCredentials").getString("Lösenord");
