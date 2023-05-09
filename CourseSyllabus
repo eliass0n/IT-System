@@ -1,0 +1,128 @@
+package org.example;
+
+import static com.codeborne.selenide.Selectors.*;
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.visible;
+
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.io.IOException;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.openqa.selenium.chrome.ChromeOptions;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import com.codeborne.selenide.WebDriverRunner;
+
+public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    public static void main(String[] args) {
+
+        try {
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\Alexander\\Desktop\\Skolarbete\\I0015N - Test av itsystem\\chromedriver.exe");
+
+            ChromeOptions options = new ChromeOptions();
+
+            // Open the website using Selenide
+            open("https://www.ltu.se");
+
+            $(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")).click();
+            logger.info("Accept cookies");
+
+            // Click the "Student" button
+            $(By.xpath("//a[text()='Student']")).click();
+            // Do something on the website, for example print the page title
+
+
+            $(By.xpath("//a[text()='Mitt LTU']")).click();
+
+            String username = "";
+            String password = "";
+
+            try {
+                String jsonString = new String(Files.readAllBytes(Paths.get("c:/temp/info.json")));
+                JSONObject jsonObject = new JSONObject(jsonString);
+                username = jsonObject.getJSONObject("ltuCredentials").getString("Användarid");
+                password = jsonObject.getJSONObject("ltuCredentials").getString("Lösenord");
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Fill in the login form
+            $(byId("username")).shouldBe(visible).setValue(username);
+            $(byId("password")).shouldBe(visible).setValue(password);
+            $(byName("submit")).shouldBe(visible).click();
+            logger.info("Loggar in");
+
+            $(By.cssSelector("a[id$='275']")).click();
+
+
+
+            $(By.cssSelector("a[id$='279']")).click();
+
+// Hämta alla fönsterhanterare
+            List<String> handles = new ArrayList<>(WebDriverRunner.getWebDriver().getWindowHandles());
+
+            // Byt till den andra fliken (index 1)
+            WebDriverRunner.getWebDriver().switchTo().window(handles.get(1));
+            logger.info("Switches to the new tab");
+
+            Thread.sleep(3000);
+
+            // Find the dropdown element by its ID
+            WebElement dropdown = $(By.id("utbkatsearch_filterKategori")).shouldBe(visible);
+
+// Create a Select object from the dropdown element
+            Select select = new Select(dropdown);
+
+// Select the option with text "Alla program, kurser och examen"
+            select.selectByVisibleText("Alla program, kurser och examen");
+
+
+            Thread.sleep(3000);
+
+
+
+            // Click the "Search on text" label
+            $(byXpath("//label[contains(text(), 'Sök på fritext')]")).click();
+
+            // Enter text in the "Sök på fritext" field using the YourPage class
+            $(By.id("fritext")).setValue("Systemvetenskap");
+
+// Click the search button
+            $(By.xpath("//*[@id='btnSearch']")).click();
+
+            // Locate and click the target element
+            $(By.cssSelector("html > body > main > div > div > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2) > a"))
+                    .shouldBe(visible)
+                    .click();
+
+            $(By.cssSelector("a[class='utbplan-pdf-link'] div"))
+                    .shouldBe(visible)
+                    .click();
+
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Press enter to exit...");
+            scanner.nextLine();
+
+        } catch (NoSuchElementException e) {
+            logger.error("No such element found: {}", e.getMessage());
+        } catch (TimeoutException e) {
+            logger.error("Timeout occurred: {}", e.getMessage());
+        } catch (WebDriverException e) {
+            logger.error("WebDriver exception occurred: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Exception occurred: {}", e.getMessage());
+        }
+    }
+}
