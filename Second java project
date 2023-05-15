@@ -1,0 +1,448 @@
+package org.example;
+
+import static com.codeborne.selenide.Selectors.*;
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.visible;
+
+import java.util.NoSuchElementException;
+import java.util.Scanner;
+import java.io.IOException;
+
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.openqa.selenium.chrome.ChromeOptions;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import com.codeborne.selenide.WebDriverRunner;
+
+//Course syllabus 
+public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    public static void main(String[] args) {
+
+        try {
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\Alexander\\Desktop\\Skolarbete\\I0015N - Test av itsystem\\chromedriver.exe");
+
+            ChromeOptions options = new ChromeOptions();
+
+            // Open the website using Selenide
+            open("https://www.ltu.se");
+
+            $(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")).click();
+            logger.info("Accept cookies");
+
+            // Click the "Student" button
+            $(By.xpath("//a[text()='Student']")).click();
+            logger.info("Clicking student option");
+
+
+            // Do something on the website, for example print the page title
+
+
+            $(By.xpath("//a[text()='Mitt LTU']")).click();
+
+            logger.info("Clicking LTU button");
+
+            String username = "";
+            String password = "";
+
+            try {
+                String jsonString = new String(Files.readAllBytes(Paths.get("c:/temp/ltu.json")));
+                JSONObject jsonObject = new JSONObject(jsonString);
+                username = jsonObject.getJSONObject("ltuCredentials").getString("Användarid");
+                password = jsonObject.getJSONObject("ltuCredentials").getString("Lösenord");
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Fill in the login form
+            $(byId("username")).shouldBe(visible).setValue(username);
+            $(byId("password")).shouldBe(visible).setValue(password);
+            $(byName("submit")).shouldBe(visible).click();
+            logger.info("Loggar in");
+
+            $(By.cssSelector("a[id$='275']")).click();
+
+
+
+            $(By.cssSelector("a[id$='279']")).click();
+
+// Hämta alla fönsterhanterare
+            List<String> handles = new ArrayList<>(WebDriverRunner.getWebDriver().getWindowHandles());
+
+            // Byt till den andra fliken (index 1)
+            WebDriverRunner.getWebDriver().switchTo().window(handles.get(1));
+            logger.info("Switches to the new tab");
+
+            Thread.sleep(3000);
+
+            // Find the dropdown element by its ID
+            WebElement dropdown = $(By.id("utbkatsearch_filterKategori")).shouldBe(visible);
+
+            logger.info("Found dropdown");
+
+
+// Create a Select object from the dropdown element
+            Select select = new Select(dropdown);
+
+
+
+
+// Select the option with text "Alla program, kurser och examen"
+            select.selectByVisibleText("Alla program, kurser och examen");
+
+            logger.info("Selected option in dropdown");
+
+
+            Thread.sleep(3000);
+
+
+            // Click the "Search on text" label
+            $(byXpath("//label[contains(text(), 'Sök på fritext')]")).click();
+
+            logger.info("Clicked search label");
+
+
+            // Enter text in the "Sök på fritext" field
+            $(By.id("fritext")).setValue("Systemvetenskap");
+
+
+            logger.info("Entered text in search field");
+
+
+// Click the search button
+            $(By.xpath("//*[@id='btnSearch']")).click();
+
+            logger.info("Clicked search button");
+
+
+            // Locate and click the target element
+            $(By.cssSelector("html > body > main > div > div > div > div:nth-of-type(2) > div > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(4) > div:nth-of-type(2) > div:nth-of-type(2) > a"))
+                    .shouldBe(visible)
+                    .click();
+
+            logger.info("Located and clicked target element");
+
+
+
+            $(By.cssSelector("a[class='utbplan-pdf-link'] div"))
+                    .shouldBe(visible)
+                    .click();
+
+            logger.info("Clicked PDF download link");
+
+            logger.info("Sucessfully downloaded pdf");
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Press enter to exit...");
+            scanner.nextLine();
+
+        } catch (NoSuchElementException e) {
+            logger.error("No such element found: {}", e.getMessage());
+        } catch (TimeoutException e) {
+            logger.error("Timeout occurred: {}", e.getMessage());
+        } catch (WebDriverException e) {
+            logger.error("WebDriver exception occurred: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Exception occurred: {}", e.getMessage());
+        }
+    }
+}
+
+
+import com.codeborne.selenide.WebDriverRunner;
+import org.example.Main;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Selectors.byId;
+import static com.codeborne.selenide.Selectors.byName;
+import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.open;
+
+
+//Finalexaminfo
+public class Tenta {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    public static void main(String[] args) {
+
+        try {
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\mattt\\OneDrive\\Dokument\\Systemvetenskap\\IT-design\\chromedriver.exe2");
+            ChromeOptions options = new ChromeOptions();
+
+            // Open the website using Selenide
+            open("https://www.ltu.se");
+
+            $(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")).click();
+            logger.info("Accept cookies");
+
+            // Click the "Student" button
+            $(By.xpath("//a[text()='Student']")).click();
+            // Do something on the website, for example print the page title
+
+
+            $(By.xpath("//a[text()='Mitt LTU']")).click();
+
+
+            String username = "";
+            String password = "";
+
+            try {
+                String jsonString = new String(Files.readAllBytes(Paths.get("c:/temp/ltu.json")));
+                JSONObject jsonObject = new JSONObject(jsonString);
+                username = jsonObject.getJSONObject("ltuCredentials").getString("Användarid");
+                password = jsonObject.getJSONObject("ltuCredentials").getString("Lösenord");
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Fill in the login form
+            $(byId("username")).shouldBe(visible).setValue(username);
+            $(byId("password")).shouldBe(visible).setValue(password);
+            $(byName("submit")).shouldBe(visible).click();
+            logger.info("Loggar in");
+
+            $(By.cssSelector("a[id$='261']")).click();
+            $(By.cssSelector("a[id$='265']")).click();
+
+            // Hämta alla fönsterhanterare
+            List<String> handles = new ArrayList<>(WebDriverRunner.getWebDriver().getWindowHandles());
+
+            // Byt till den andra fliken (index 1)
+            WebDriverRunner.getWebDriver().switchTo().window(handles.get(1));
+            logger.info("Byter till den nya fliken");
+
+            $("a[class='signin']").click();
+
+            // Fill in the login form
+            $(byId("login_username")).shouldBe(visible).setValue(username);
+            $(byId("login_password")).shouldBe(visible).setValue(password).pressEnter();
+            logger.info("Loggar in");
+
+            $(By.xpath("/html/body/div[1]/div[2]/div/div/ul/li[9]/a/em/b")).click();
+            logger.info("Klickar på aktivitetsanmälan");
+
+
+            File targetDir = new File("target\\screenshots");
+            if (!targetDir.exists()) {
+                targetDir.mkdirs();
+            }
+
+            try {
+                // Create a robot instance
+                Robot robot = new Robot();
+
+                // Capture the screen
+                Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+                BufferedImage screenCapture = robot.createScreenCapture(screenRect);
+
+                // Save the captured screen as a JPEG file
+                File file = new File("target\\screenshots\\final_examination.jpeg");
+                ImageIO.write(screenCapture, "jpeg", file);
+                System.out.println("Screen capture saved as " + file.getAbsolutePath());
+
+            } catch (AWTException | IOException ex) {
+                System.err.println(ex);
+            }
+            
+            $(By.xpath("//a[@class='greenbutton']/span"))
+                    .shouldBe(visible)
+                    .click();
+
+            WebDriverRunner.getWebDriver().close();
+            logger.info("Closes the current page");
+
+            WebDriverRunner.getWebDriver().switchTo().window(handles.get(0));
+            logger.info("Switches to the previous tab");
+
+            // Klicka på avatar-länken
+            $(By.xpath("//span[@class='user-full-name']")).click();
+            // Klicka på logout-ikonen
+            $(By.xpath("//a[@title='Logga ut']")).click();
+            logger.info("Logging out of ltu");
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Press enter to exit...");
+            scanner.nextLine();
+
+        } catch (NoSuchElementException e) {
+            logger.error("No such element found: {}", e.getMessage());
+        } catch (TimeoutException e) {
+            logger.error("Timeout occurred: {}", e.getMessage());
+        } catch (WebDriverException e) {
+            logger.error("WebDriver exception occurred: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Exception occurred: {}", e.getMessage());
+        }
+    }
+}
+
+
+package org.example;
+
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Condition.visible;
+import java.util.Scanner;
+import java.io.IOException;
+
+import com.codeborne.selenide.Selenide;
+import org.openqa.selenium.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.By;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import static com.codeborne.selenide.Selectors.byId;
+import static com.codeborne.selenide.Selectors.byName;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.List;
+import com.codeborne.selenide.WebDriverRunner;
+
+
+
+//Registration 
+public class Intyg {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    public static void main(String[] args) {
+
+        try {
+            System.setProperty("webdriver.chrome.driver", "C:\\Users\\Alexander\\Desktop\\Skolarbete\\I0015N - Test av itsystem\\chromedriver.exe");
+            ChromeOptions options = new ChromeOptions();
+
+            // Open the website using Selenide
+            open("https://www.ltu.se");
+
+            $(By.id("CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll")).click();
+            logger.info("Accept cookies");
+
+            // Click the "Student" button
+            $(By.xpath("//a[text()='Student']")).click();
+            logger.info("Click the student button");
+
+            $(By.xpath("//a[text()='Mitt LTU']")).click();
+            logger.info("clicks on my ltu");
+
+            String username = "";
+            String password = "";
+
+            try {
+                String jsonString = new String(Files.readAllBytes(Paths.get("c:/temp/ltu.json")));
+                JSONObject jsonObject = new JSONObject(jsonString);
+                username = jsonObject.getJSONObject("ltuCredentials").getString("Användarid");
+                password = jsonObject.getJSONObject("ltuCredentials").getString("Lösenord");
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+
+            // Fill in the login form
+            $(byId("username")).shouldBe(visible).setValue(username);
+            $(byId("password")).shouldBe(visible).setValue(password);
+            $(byName("submit")).shouldBe(visible).click();
+            logger.info("Sign in");
+
+            $(By.cssSelector("a[id*='271']")).click();
+            logger.info("Click on certificate");
+
+            // Hämta alla fönsterhanterare
+            List<String> handles = new ArrayList<>(WebDriverRunner.getWebDriver().getWindowHandles());
+
+            // Byt till den andra fliken (index 1)
+            WebDriverRunner.getWebDriver().switchTo().window(handles.get(1));
+            logger.info("Switches to the new tab");
+
+            $(By.xpath("//a[contains(@aria-label, 'lärosäte')]")).click();
+            logger.info("Clicks on university");
+
+            $(byId("searchinput")).setValue("ltu");
+            logger.info("Entering ltu");
+
+            $(By.cssSelector("li[aria-label='Select Lulea University of Technology']")).click();
+            logger.info("Clicks on ltu that comes up");
+
+            $(By.xpath("//button[contains(@role, 'button')]")).click();
+            logger.info("Clicks on menu");
+
+            $(By.xpath("//a[@href='/student/app/studentwebb/intyg']")).click();
+            logger.info("Click on certificate");
+
+            $(By.xpath("//button[@title='Skapa intyg']")).click();
+            logger.info("Creates certificate");
+
+            $(By.xpath("//select[@id='intygstyp']")).selectOption("Registreringsintyg");
+            logger.info("Clicks on certificate type and takes registration certificate");
+
+            $(By.xpath("//input[@id='allaRegistreringarGrupperdePaProgramRadio']")).click();
+            logger.info("All registrations");
+            Thread.sleep(2000);
+
+            Selenide.executeJavaScript("arguments[0].click();", $(By.xpath("//button[contains(@class, 'btn-ladok-brand')]")));
+            logger.info("Creates certificate");
+
+            $(By.xpath("//a[contains(text(),'Registreringsintyg')]")).click();
+            logger.info("download registers");
+
+            $(By.xpath("//button[contains(@role, 'button')]")).click();
+            logger.info("Clicks on menu");
+
+            $(By.xpath("/html/body/ladok-root/div/ladok-sido-meny/nav/div[2]/ul[3]/li/a")).click();
+            logger.info("Log out");
+
+            WebDriverRunner.getWebDriver().close();
+            logger.info("Closes the current page");
+
+            WebDriverRunner.getWebDriver().switchTo().window(handles.get(0));
+            logger.info("Switches to the previous tab");
+
+            // Klicka på avatar-länken
+            $(By.xpath("//span[@class='user-full-name']")).click();
+            // Klicka på logout-ikonen
+            $(By.xpath("//a[@title='Logga ut']")).click();
+            logger.info("Logging out of ltu");
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Press enter to exit...");
+            scanner.nextLine();
+
+        } catch (NoSuchElementException e) {
+            logger.error("No such element found: {}", e.getMessage());
+        } catch (TimeoutException e) {
+            logger.error("Timeout occurred: {}", e.getMessage());
+        } catch (WebDriverException e) {
+            logger.error("WebDriver exception occurred: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("Exception occurred: {}", e.getMessage());
+        }
+    }
+}
+
